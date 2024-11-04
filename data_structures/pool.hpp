@@ -9,20 +9,21 @@ public:
     class Object
     {
     public:
-        Object(T &rhs) {
-            _obj = &rhs;
+        Object(T &rhs, size_t &i) : _obj(rhs), _relatedIndex(i) {
         }
 
         TType* operator -> () {
-            return (_obj);
+            return (&_obj);
         }
 
         ~Object() {
-            _obj = &rhs;
+            _obj.~TType();
+            --_relatedIndex;
         }
 
     private:
-        TType *_obj;
+        TType &_obj;
+        size_t &_relatedIndex;
     };
     Pool() {
         _arr = nullptr;
@@ -51,7 +52,9 @@ public:
             throw std::out_of_range("out of range");
         }
         _arr[_index] = TType(p_args...);
-        return (Pool::Object<TType>(_arr[_index++]));
+        size_t tmpIndex = _index;
+        ++_index;
+        return (Pool::Object<TType>(_arr[tmpIndex], tmpIndex));
     }
 
    
