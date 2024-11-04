@@ -1,0 +1,10 @@
+lem-in
+objs
+*.o
+.vscode
+main.cpp
+libftpp
+# main_pool.cpp
+main*.cpp
+prog
+libftpp.a
