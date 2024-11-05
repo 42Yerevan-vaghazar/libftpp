@@ -6,28 +6,32 @@ CXX = c++
 
 AR = ar rcs
 
-INCLUDES = -I./data_structures
+INCLUDES = -I./src
 
 CXXFLAGS = -std=c++17 -Wall -Wextra #-Werror
 
-SRCS = $(wildcard *.cpp)
+SRCS1 = $(wildcard *.cpp)
 
-OBJS = $(patsubst %.cpp, ./$(TMP)/%.o, $(SRCS))
+OBJS = $(patsubst %.cpp, ./$(TMP)/%.o, $(SRCS1))
+
+SRCS2 = $(wildcard src/*.cpp)
+
+OBJS += $(patsubst src/%.cpp, ./$(TMP)/src/%.o, $(SRCS2))
 
 RM = rm -fr
 
-HEADER = $(wildcard *.hpp) $(wildcard data_structures/*.hpp)
+HEADER = $(wildcard *.hpp) $(wildcard src/*.hpp)
+
+all: $(NAME)
 
 ./$(TMP)/%.o: %.cpp $(HEADER) Makefile
 	$(CXX) $(INCLUDES) $(CXXFLAGS) -o $@ -c $<
-
-all: $(NAME)
 
 $(NAME): $(TMP) $(OBJS)
 	$(CXX) $(INCLUDES) $(CXXFLAGS) $(OBJS) -o $(NAME)
 
 $(TMP):
-	@mkdir $(TMP)
+	@mkdir -p $(TMP)/src
 
 clean:
 	$(RM) $(OBJS_DIR)
