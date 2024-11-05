@@ -4,6 +4,7 @@
 class Memento
 {
 public:
+    virtual ~Memento();
     class Snapshot : public DataBuffer {};
     Memento::Snapshot save();
     void load(const Memento::Snapshot& state);

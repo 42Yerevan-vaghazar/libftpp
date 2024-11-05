@@ -9,3 +9,5 @@ Memento::Snapshot Memento::save() {
 void Memento::load(const Memento::Snapshot& state) {
     _loadFromSnapshot(const_cast<Memento::Snapshot&>(state));
 }
+
+Memento::~Memento() {};
