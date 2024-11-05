@@ -9,7 +9,7 @@ public:
 
     template <typename T>
     void push(const T& p_object) {
-        std::stringstream s;
+        std::stringstream s(std::ios_base::in | std::ios_base::out | std::ios_base::binary);
         s << p_object;
 
         _streams.push(std::move(s));
