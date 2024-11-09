@@ -21,20 +21,24 @@ public:
     TType pop_back() {
         mutex.lock();
         if (deque.empty()) {
+            mutex.unlock();
             throw std::runtime_error("There is no element in queue");
         }
         TType tmp = deque.back();
+        deque.pop_back();
         mutex.unlock();
-        return (deque.pop_back(), tmp);
+        return (tmp);
     }
     TType pop_front() {
         mutex.lock();
         if (deque.empty()) {
+            mutex.unlock();
             throw std::runtime_error("There is no element in queue");
         }
         TType tmp = deque.front();
+        deque.pop_front();
         mutex.unlock();
-        return (deque.pop_front(), tmp);
+        return (tmp);
     }
 private:
     std::mutex mutex;
