@@ -19,8 +19,11 @@ public:
 
     ThreadSafeIOStream &operator<<(std::ostream& (*manip)(std::ostream&)) {
     const std::lock_guard<std::mutex> lock(_mutex);
+    std::ostringstream buffer;
 
-    std::cout << threadLocalPrefix << _buffer.str() << manip << std::flush;
+    buffer << threadLocalPrefix << _buffer.str() << manip;
+
+    std::cout << buffer.str();
     _buffer.str("");
     _buffer.clear();
     return (*this);
