@@ -9,3 +9,15 @@ void ThreadSafeIOStream::setPrefix(const std::string& prefix) {
     threadLocalPrefix = prefix;
 }
 
+
+ThreadSafeIOStream &ThreadSafeIOStream::operator<<(std::ostream& (*manip)(std::ostream&)) {
+    const std::lock_guard<std::mutex> lock(_mutex);
+    std::ostringstream buffer;
+
+    buffer << threadLocalPrefix << _buffer.str() << manip;
+
+    std::cout << buffer.str();
+    _buffer.str("");
+    _buffer.clear();
+    return (*this);
+}

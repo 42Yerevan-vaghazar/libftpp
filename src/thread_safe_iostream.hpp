@@ -12,22 +12,21 @@ public:
     void setPrefix(const std::string& prefix);
 
     template <typename T>
-    ThreadSafeIOStream &operator<<(const T &str) {
-        _buffer << str;
+    ThreadSafeIOStream &operator<<(const T &obj) {
+        _buffer << obj;
         return (*this);
     }
 
-    ThreadSafeIOStream &operator<<(std::ostream& (*manip)(std::ostream&)) {
-    const std::lock_guard<std::mutex> lock(_mutex);
-    std::ostringstream buffer;
+    ThreadSafeIOStream &operator<<(std::ostream& (*manip)(std::ostream&));
 
-    buffer << threadLocalPrefix << _buffer.str() << manip;
+    template <typename T>
+    ThreadSafeIOStream &operator>>(T &obj) {
+        const std::lock_guard<std::mutex> lock(_mutex);
 
-    std::cout << buffer.str();
-    _buffer.str("");
-    _buffer.clear();
-    return (*this);
-}
+        std::cin >> obj;
+        return (*this);
+    }
+
 private:
 
     std::ostringstream _buffer;
