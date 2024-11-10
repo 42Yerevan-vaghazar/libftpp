@@ -1,53 +1,36 @@
 #pragma once
 #include <iostream>
-#include <unordered_map>
 #include <thread>
 #include <mutex>
+#include <sstream>
+
 
 class ThreadSafeIOStream
 {
 public:
-    ThreadSafeIOStream() : _isPrefixPrinted(false){}
-    template <typename T>
-    friend ThreadSafeIOStream &operator<<(ThreadSafeIOStream &obj, const T &str) ;
-    friend inline ThreadSafeIOStream &operator<<(ThreadSafeIOStream &obj, std::ostream& (*manip)(std::ostream&));  
-    void setPrefix(const std::string& prefix) {
-        _prefixs[std::this_thread::get_id()] = {prefix, false};
-    }
-private:
-    struct thread_info
-    {
-        std::string prefix;
-        bool isPrefixPrinted;
-    };
+    void setPrefix(const std::string& prefix);
 
-    std::unordered_map<std::thread::id, thread_info> _prefixs;
-    bool _isPrefixPrinted;
+    template <typename T>
+    ThreadSafeIOStream &operator<<(const T &obj) {
+        _buffer << obj;
+        return (*this);
+    }
+
+    ThreadSafeIOStream &operator<<(std::ostream& (*manip)(std::ostream&));
+
+    template <typename T>
+    ThreadSafeIOStream &operator>>(T &obj) {
+        const std::lock_guard<std::mutex> lock(_mutex);
+
+        std::cin >> obj;
+        return (*this);
+    }
+
+private:
+
+    std::ostringstream _buffer;
+    std::string threadLocalPrefix;
     std::mutex _mutex;
 };
 
-template <typename T>
-ThreadSafeIOStream &operator<<(ThreadSafeIOStream &obj, const T &str) {
-    auto &[prefix, _isPrefixPrinted] = obj._prefixs[std::this_thread::get_id()];
-
-    if (_isPrefixPrinted == false) {
-        obj._mutex.lock();
-        _isPrefixPrinted = true;
-        std::cout << prefix;
-    }
-    std::cout << str;
-    return (obj);
-}
-             
-
-inline ThreadSafeIOStream &operator<<(ThreadSafeIOStream &obj, std::ostream& (*manip)(std::ostream&)) {
-    auto &[prefix, _isPrefixPrinted] = obj._prefixs[std::this_thread::get_id()];
-    if (_isPrefixPrinted == false) {
-        _isPrefixPrinted = true;
-        std::cout << prefix;
-    }
-    std::cout << manip;
-    _isPrefixPrinted = false;
-    obj._mutex.unlock();
-    return (obj);
-}
+extern thread_local ThreadSafeIOStream threadSafeCout; 
