@@ -8,56 +8,17 @@
 class PersistentWorker
 {
 public:
-    PersistentWorker() {};
 
-    ~PersistentWorker() {
-        for(auto &[name, a] : _setOfFinish) {
-            a = true;
-        }
+    PersistentWorker(const PersistentWorker&) = delete;
+    PersistentWorker& operator =(const PersistentWorker&) = delete;
+    PersistentWorker() = default;
 
-        for(auto &[name, task] : _setOfTasks) {
-            if (task.joinable())
-                task.join();
-        }
-    };
+    ~PersistentWorker();
 
     void addTask(const std::string& name, const
-        std::function<void()>& jobToExecute) {
-        _setOfTasks.insert({name, std::thread([&]() {
-                while (true) {
-                    bool is_finished;
-                    {
-                        std::lock_guard<std::mutex> lock(_guard);
-                        is_finished = _setOfFinish[name];
-                    }
-                    if (is_finished) {
-                        return ;
-                    }
-                    jobToExecute();
-                }
-            })});
-        {
-            std::lock_guard<std::mutex> lock(_guard);
-            _setOfFinish.insert({name, false});
-        }
-    };
+        std::function<void()>& jobToExecute);
 
-    void removeTask(const std::string& name) {
-        {
-            std::lock_guard<std::mutex> lock(_guard);
-            _setOfFinish[name] = true;
-        }
-            auto &task = _setOfTasks[name];
-
-            if (task.joinable())
-                task.join();
-
-            _setOfTasks.erase(name);
-    }
-private:
-    void start_task() {
-
-    }
+    void removeTask(const std::string& name);
 private:
     std::mutex _guard;
     std::unordered_map<std::string, std::thread> _setOfTasks;
