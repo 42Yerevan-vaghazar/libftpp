@@ -8,7 +8,7 @@ AR = ar rcs
 
 INCLUDES = -I./src
 
-CXXFLAGS = -std=c++17 -Wall -Wextra #-Werror
+CXXFLAGS = -std=c++17 -Wall -Wextra #-fsanitize=address #-Werror
 
 SRCS1 = $(wildcard *.cpp)
 
