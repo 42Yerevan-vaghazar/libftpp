@@ -40,6 +40,9 @@ public:
         mutex.unlock();
         return (tmp);
     }
+    bool empty() const {
+        return (deque.empty());
+    }
 private:
     std::mutex mutex;
     std::deque<TType> deque;
