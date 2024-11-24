@@ -24,7 +24,7 @@ public:
         _streams.pop();
     }
 private:
-    std::queue<std::stringstream> _streams;
+    std::queue<std::stringstream> _streams; // TODO is it requiered to have queue or stringstream handles all staff itself
 };
 
 template <typename T>
