@@ -1,6 +1,8 @@
-NAME = prog
+NAME = libftpp.a
 
-TMP = objs
+OBJS_DIR = objs
+
+LIB_DIR = lib
 
 CXX = c++
 
@@ -8,15 +10,15 @@ AR = ar rcs
 
 INCLUDES = -I./src
 
-CXXFLAGS = -std=c++17 -Wall -Wextra #-fsanitize=address #-Werror
+CXXFLAGS = -std=c++17 -Wall -Wextra -Werror
 
 SRCS1 = $(wildcard *.cpp)
 
-OBJS = $(patsubst %.cpp, ./$(TMP)/%.o, $(SRCS1))
+OBJS = $(patsubst %.cpp, ./$(OBJS_DIR)/%.o, $(SRCS1))
 
 SRCS2 = $(wildcard src/*.cpp)
 
-OBJS += $(patsubst src/%.cpp, ./$(TMP)/src/%.o, $(SRCS2))
+OBJS += $(patsubst src/%.cpp, ./$(OBJS_DIR)/src/%.o, $(SRCS2))
 
 RM = rm -fr
 
@@ -24,18 +26,20 @@ HEADER = $(wildcard *.hpp) $(wildcard src/*.hpp)
 
 all: $(NAME)
 
-./$(TMP)/%.o: %.cpp $(HEADER) Makefile
+./$(OBJS_DIR)/%.o: %.cpp $(HEADER) Makefile
 	$(CXX) $(INCLUDES) $(CXXFLAGS) -o $@ -c $<
 
-$(NAME): $(TMP) $(OBJS)
-	$(CXX) $(INCLUDES) $(CXXFLAGS) $(OBJS) -o $(NAME)
+$(NAME): $(OBJS_DIR) $(OBJS) $(LIB_DIR)
+	$(AR) $(LIB_DIR)/$(NAME) $(OBJS)
 
-$(TMP):
-	@mkdir -p $(TMP)/src
+$(OBJS_DIR):
+	@mkdir -p $(OBJS_DIR)/src
+
+$(LIB_DIR):
+	@mkdir -p $(LIB_DIR)/src
 
 clean:
 	$(RM) $(OBJS_DIR)
-	$(RM) $(TMP)
 
 fclean: clean
 	$(RM) $(NAME)
