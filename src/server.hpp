@@ -39,8 +39,7 @@ public:
         Client(Client const &) = delete;
         Client& operator=(Client const &) = delete;
         Client(int clientSocket) 
-            :   isMessageReady(false),
-                _messageSize(0),
+            :   _messageSize(0),
                 _socket_fd(clientSocket) {}
 
         ~Client()
@@ -81,9 +80,9 @@ public:
             return (&_messageQueue);
         };
     private:
-        bool isMessageReady;
-        int _socket_fd;
+        // bool isMessageReady;
         size_t _messageSize;
+        int _socket_fd;
         std::string _buffer;
         std::queue<Message *> _messageQueue;
     };
