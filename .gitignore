@@ -9,3 +9,6 @@ main*.cpp
 prog
 libftpp.a
 file
+a.out
+server
+client
