@@ -1,36 +1,37 @@
 #pragma once
-#include <iostream>
-#include "data_buffer.hpp"
 
-class Message
-{
+#include <iostream>
+#include <sstream>
+#include <string>
+#include <cstring>
+
+class Message {
 public:
-    template <typename T>
-    friend const Message& operator<<(const Message& message, const T& p_object);
-    template <typename T>
-    friend const Message& operator>>(const Message& message, T& p_object);
     using Type = int;
+
     Message() = delete;
-    Message(const Message&) = delete;
-    Message(Type type);
+    Message(const Message&);
+    explicit Message(Type type);
     ~Message();
 
     Type getType() const;
+
+    std::string serialize() const;
+    static Message deserialize(std::stringstream &ss);
+
+    template <typename T>
+    Message& operator<<(const T& obj) {
+        const_cast<Message &>(*this)._sstream << obj;
+        return *this;
+    }
+
+    template <typename T>
+    const Message& operator>>(T& obj) const {
+        const_cast<Message &>(*this)._sstream >> obj;
+        return *this;
+    }
+
 private:
-    int _type;
+    Type _type;
     std::stringstream _sstream;
 };
-
-template <typename T>
-const Message& operator<<(const Message& message, const T& obj) {
-    const_cast<Message&>(message)._sstream << obj;
-
-    return (message);
-}
-
-template <typename T>
-const Message& operator>>(const Message& message, T& obj) {
-
-    const_cast<Message&>(message)._sstream >> obj;
-    return (message);
-}
