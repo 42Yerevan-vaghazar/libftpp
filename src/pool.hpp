@@ -47,7 +47,7 @@ public:
     }
 
     template<typename ... TArgs>
-    Pool::Object<TType> acquire(TArgs&& ...p_args) {
+    Pool::Object<TType> acquire(TArgs&& p_args) {
         if (_index == _size) {
             throw std::out_of_range("out of range");
         }

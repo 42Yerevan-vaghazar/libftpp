@@ -21,16 +21,27 @@ public:
     template <typename T>
     ThreadSafeIOStream &operator>>(T &obj) {
         const std::lock_guard<std::mutex> lock(_mutex);
-
+        std::cout << threadLocalPrefix;
+        
         std::cin >> obj;
         return (*this);
     }
+
+    template<typename T>
+    void prompt(const std::string& question, T& dest) {
+        const std::lock_guard<std::mutex> lock(_mutex);
+        std::cout << threadLocalPrefix;
+
+        std::cout << question;
+        std::cin >> dest;
+    };
 
 private:
 
     std::ostringstream _buffer;
     std::string threadLocalPrefix;
-    std::mutex _mutex;
+    static std::mutex _mutex;
 };
 
+std::mutex ThreadSafeIOStream::_mutex;
 extern thread_local ThreadSafeIOStream threadSafeCout; 

@@ -18,7 +18,7 @@ public:
         return _obj;
     };
     template<typename ... TArgs>
-    static void instantiate(TArgs&& ...p_args) {
+    static void instantiate(TArgs&& p_args) {
         if (_obj) {
             throw std::runtime_error("Exception: The instance is already created");
         }
