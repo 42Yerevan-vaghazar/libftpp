@@ -1,6 +1,7 @@
 #include "thread_safe_iostream.hpp"
 
 thread_local ThreadSafeIOStream threadSafeCout;
+std::mutex ThreadSafeIOStream::_mutex;
 // thread_local std::ostringstream ThreadSafeIOStream::_buffer;
 // thread_local std::string ThreadSafeIOStream::threadLocalPrefix;
 
