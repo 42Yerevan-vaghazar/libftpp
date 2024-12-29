@@ -23,9 +23,8 @@ public:
 
     void addJob(const std::function<void()>& jobToExecute) override;
 
-    void _start_thread();
-
 private:
+    void _start_thread();
     size_t _numThreads;
     bool _stopExecuting;
     std::vector<std::thread> _workers;

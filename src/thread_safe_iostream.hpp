@@ -43,5 +43,4 @@ private:
     static std::mutex _mutex;
 };
 
-std::mutex ThreadSafeIOStream::_mutex;
 extern thread_local ThreadSafeIOStream threadSafeCout; 

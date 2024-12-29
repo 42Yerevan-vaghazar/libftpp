@@ -5,10 +5,10 @@ class Memento
 {
 public:
     virtual ~Memento();
-    class Snapshot : public DataBuffer {};
+    using Snapshot = DataBuffer;
     Memento::Snapshot save();
     void load(const Memento::Snapshot& state);
 private:
-    virtual void _saveToSnapshot(Memento::Snapshot& snapshot) = 0;
+    virtual void _saveToSnapshot(Memento::Snapshot& snapshot) const = 0;
     virtual void _loadFromSnapshot(Memento::Snapshot& snapshot) = 0;
 };

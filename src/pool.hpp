@@ -12,7 +12,7 @@ public:
         Object(T &rhs, size_t &i) : _obj(rhs), _relatedIndex(i) {
         }
 
-        TType* operator -> () {
+        TType* operator->() {
             return (&_obj);
         }
 
@@ -47,14 +47,13 @@ public:
     }
 
     template<typename ... TArgs>
-    Pool::Object<TType> acquire(TArgs&& p_args) {
+    Pool::Object<TType> acquire(TArgs&& ...p_args) {
         if (_index == _size) {
             throw std::out_of_range("out of range");
         }
-        _arr[_index] = TType(p_args...);
-        size_t tmpIndex = _index;
-        ++_index;
-        return (Pool::Object<TType>(_arr[tmpIndex], tmpIndex));
+        _arr[_index++] = TType(p_args...);
+        Pool::Object<TType> tmp(_arr[_index], _index);
+        return (tmp);
     }
 
    
