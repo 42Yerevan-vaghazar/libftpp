@@ -36,7 +36,7 @@ $(OBJS_DIR):
 	@mkdir -p $(OBJS_DIR)/src
 
 $(LIB_DIR):
-	@mkdir -p $(LIB_DIR)/src
+	@mkdir -p $(LIB_DIR)
 
 clean:
 	$(RM) $(OBJS_DIR)
