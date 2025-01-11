@@ -5,7 +5,6 @@ objs
 main.cpp
 libftpp
 # main_pool.cpp
-main*.cpp
 prog
 libftpp.a
 file
@@ -13,3 +12,7 @@ a.out
 server
 client
 .DS_Store
+main_*
+!main*.cpp
+script.sh
+lib
