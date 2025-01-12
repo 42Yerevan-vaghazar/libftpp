@@ -27,12 +27,13 @@ int main() {
         Pool<TestObject>::Object obj2 = myPool.acquire();
         obj2->sayHello();  // Should also output: "Hello from TestObject"
         // obj2 is released back to the pool when it goes out of scope
+        std::cout << (obj2()) << std::endl;;
     }
 
     // Acquire another object; this should give us the object that obj2 pointed to
     Pool<TestObject>::Object obj3 = myPool.acquire();
     obj3->sayHello();  // Should output: "Hello from TestObject"
-
+    std::cout << (obj3()) << std::endl;
     // obj1 and obj3 are released back to the pool when the program ends
     return 0;
 }
