@@ -9,35 +9,29 @@ class ThreadSafeQueue
 public:
     void push_back(const TType& newElement)
     {
-        mutex.lock();
+        std::lock_guard<std::mutex> lock(mutex);
         deque.push_back(newElement);
-        mutex.unlock();
     }
     void push_front(const TType& newElement) {
-        mutex.lock();
+        std::lock_guard<std::mutex> lock(mutex);
         deque.push_front(newElement);
-        mutex.unlock();
     }
     TType pop_back() {
-        mutex.lock();
+        std::lock_guard<std::mutex> lock(mutex);
         if (deque.empty()) {
-            mutex.unlock();
             throw std::runtime_error("There is no element in queue");
         }
         TType tmp = deque.back();
         deque.pop_back();
-        mutex.unlock();
         return (tmp);
     }
     TType pop_front() {
-        mutex.lock();
+        std::lock_guard<std::mutex> lock(mutex);
         if (deque.empty()) {
-            mutex.unlock();
             throw std::runtime_error("There is no element in queue");
         }
         TType tmp = deque.front();
         deque.pop_front();
-        mutex.unlock();
         return (tmp);
     }
     bool empty() const {
