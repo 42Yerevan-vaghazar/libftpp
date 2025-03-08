@@ -1,9 +1,9 @@
 #include "worker_pool.hpp"
 
 
-WorkerPool::WorkerPool(int n) : _numThreads(n), _stopExecuting(false) {
+WorkerPool::WorkerPool(int n) : _stopExecuting(false) {
     _workers.reserve(n);
-    for (size_t i = 0; i < _numThreads; ++i) {
+    for (size_t i = 0; i < static_cast<size_t>(n); ++i) {
         _workers.emplace_back(&WorkerPool::_start_thread, this);
     }
 };
@@ -31,7 +31,7 @@ void WorkerPool::_start_thread() {
         std::function<void()> job;
         std::unique_lock<std::mutex> lock(_queueMutex);
 
-        _condition.wait(lock, [&]() { return (_stopExecuting || (_numThreads != 0 && _queue.empty() == false));});
+        _condition.wait(lock, [&]() { return (_stopExecuting || _queue.empty() == false);});
         {
             std::lock_guard<std::mutex> lock(_guard);
             if (_stopExecuting == true) {
@@ -39,11 +39,6 @@ void WorkerPool::_start_thread() {
             }
         }
         job = _queue.pop_front();
-
-        {
-            std::lock_guard<std::mutex> lock(_guard);
-            _numThreads--;
-        }
         try
         {
             job();
@@ -51,10 +46,6 @@ void WorkerPool::_start_thread() {
         catch(const std::exception& e)
         {
             std::cerr << e.what() << std::endl;
-        }
-        {
-            std::lock_guard<std::mutex> lock(_guard);
-            _numThreads++;
         }
     }
 };

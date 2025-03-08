@@ -25,7 +25,6 @@ public:
 
 private:
     void _start_thread();
-    size_t _numThreads;
     bool _stopExecuting;
     std::vector<std::thread> _workers;
     ThreadSafeQueue<std::function<void()>> _queue;
